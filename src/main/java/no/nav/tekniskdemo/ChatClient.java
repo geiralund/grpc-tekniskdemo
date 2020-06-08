@@ -24,6 +24,7 @@ public class ChatClient extends Application {
 
     private static final String HOST = "localhost";
     private static final int PORT = 50051;
+    private static final String FX_FONT_24_ARIAL = "-fx-font: 24 arial;";
 
     private ObservableList<String> messages = FXCollections.observableArrayList();
     private ListView<String> messagesView = new ListView<>();
@@ -96,10 +97,10 @@ public class ChatClient extends Application {
     private void setupAndShowPrimaryStage(Stage primaryStage) {
         messagesView.setItems(messages);
 
-        name.setStyle("-fx-font: 24 arial;");
-        message.setStyle("-fx-font: 24 arial;");
-        send.setStyle("-fx-font: 24 arial;");
-        messagesView.setStyle("-fx-font: 24 arial;");
+        name.setStyle(FX_FONT_24_ARIAL);
+        message.setStyle(FX_FONT_24_ARIAL);
+        send.setStyle(FX_FONT_24_ARIAL);
+        messagesView.setStyle(FX_FONT_24_ARIAL);
 
         send.setText("Send");
 

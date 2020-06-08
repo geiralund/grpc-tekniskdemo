@@ -1,10 +1,6 @@
 syntax = "proto3";
-option java_package = "no.nav.tekniskdemo.greeting";
 option java_multiple_files = true;
-
-import "google/protobuf/timestamp.proto";
-
-package person;
+package no.nav.tekniskdemo.person;
 
 message PersonId {
     string id = 1;
@@ -19,17 +15,10 @@ message PersonRequest {
     string name = 1;
 }
 
-message Note {
-    PersonId id = 1;
-    string message = 2;
-    google.protobuf.Timestamp timestamp = 3;
-}
-
 
 service PersonService {
     rpc createPerson(PersonRequest) returns (Person) {}
     rpc getPerson(PersonId) returns (Person) {}
-    rpc note(stream Note) returns (stream Note) {}
 }
 
 

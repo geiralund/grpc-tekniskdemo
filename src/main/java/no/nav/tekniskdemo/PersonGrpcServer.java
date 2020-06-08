@@ -5,14 +5,14 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.Status;
 import io.grpc.StatusException;
-import io.grpc.stub.StreamObserver;
-import no.nav.tekniskdemo.greeting.Note;
-import no.nav.tekniskdemo.greeting.Person;
-import no.nav.tekniskdemo.greeting.PersonId;
-import no.nav.tekniskdemo.greeting.PersonServiceGrpc;
+import no.nav.tekniskdemo.person.Person;
+import no.nav.tekniskdemo.person.PersonId;
+import no.nav.tekniskdemo.person.PersonServiceGrpc;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -23,25 +23,24 @@ public final class PersonGrpcServer {
     private static class PersonService extends PersonServiceGrpc.PersonServiceImplBase {
 
         private Map<String, Person> personStore = new HashMap<>();
-        private Set<Note> notes = new HashSet<>();
 
-        public void createPerson(no.nav.tekniskdemo.greeting.PersonRequest request,
-                                 io.grpc.stub.StreamObserver<no.nav.tekniskdemo.greeting.Person> responseObserver) {
+        public void createPerson(no.nav.tekniskdemo.person.PersonRequest request,
+                                 io.grpc.stub.StreamObserver<no.nav.tekniskdemo.person.Person> responseObserver) {
 
-            final Person person = personStore.computeIfAbsent(ulid.nextULID(), id -> Person.newBuilder()
-                    .setName(request.getName())
-                    .setId(PersonId.newBuilder().setId(id).build())
-                    .build());
-
-            System.out.println("Created person");
+            final Person person = personStore.computeIfAbsent(ulid.nextULID(), s -> {
+                System.out.println("Created person '" + request.getName() + "'");
+                return Person.newBuilder()
+                        .setName(request.getName())
+                        .setId(PersonId.newBuilder().setId(s).build())
+                        .build();
+            });
 
             responseObserver.onNext(person);
             responseObserver.onCompleted();
         }
 
-        public void getPerson(no.nav.tekniskdemo.greeting.PersonId request,
-                              io.grpc.stub.StreamObserver<no.nav.tekniskdemo.greeting.Person> responseObserver) {
-
+        public void getPerson(no.nav.tekniskdemo.person.PersonId request,
+                              io.grpc.stub.StreamObserver<no.nav.tekniskdemo.person.Person> responseObserver) {
             final Optional<Person> maybePerson = Optional.ofNullable(
                     personStore.get(request.getId()));
 
@@ -51,44 +50,7 @@ public final class PersonGrpcServer {
                 responseObserver.onError(new StatusException(Status.NOT_FOUND.withDescription(String.format("Person with id %s not found", request.getId()))));
             }
             responseObserver.onCompleted();
-
-
         }
-
-        public StreamObserver<no.nav.tekniskdemo.greeting.Note> note(
-                StreamObserver<no.nav.tekniskdemo.greeting.Note> responseObserver) {
-
-            return new StreamObserver<Note>() {
-                @Override
-                public void onNext(Note note) {
-                    final Optional<Person> maybePerson = Optional.ofNullable(personStore.get(note.getId().getId()));
-                    maybePerson.ifPresent(person -> {
-                                System.out.println("Got note " + note);
-                                notes.add(note);
-                                responseObserver.onNext(note);
-                            }
-
-                    );
-
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    t.printStackTrace(System.err);
-                    System.out.println("Note stream shutdown");
-                    responseObserver.onError(t);
-
-                }
-
-                @Override
-                public void onCompleted() {
-                    responseObserver.onCompleted();
-                }
-            };
-        }
-
-
-
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

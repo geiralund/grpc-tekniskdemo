@@ -6,9 +6,15 @@ val protbufVersion = "3.11.1"
 val protobufGradleVersion = "0.8.12"
 
 plugins {
-//    java
+    java
+    application
     kotlin("jvm") version "1.3.72"
     id("com.google.protobuf") version "0.8.12"
+    id("org.openjfx.javafxplugin") version "0.0.8"
+}
+
+application {
+    mainClassName="no.nav.tekniskdemo.ChatClient"
 }
 
 // Generate IntelliJ IDEA's .idea & .iml project files.
@@ -58,14 +64,14 @@ dependencies {
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_12
 }
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "12"
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "12"
     }
 }
 
@@ -102,4 +108,9 @@ java {
 
 fun ProtobufConfigurator.generateProtoTasks(action: ProtobufConfigurator.GenerateProtoTaskCollection.() -> Unit) {
     generateProtoTasks(closureOf(action))
+}
+
+javafx {
+    version = "14"
+    modules("javafx.base", "javafx.graphics","javafx.controls", "javafx.fxml")
 }

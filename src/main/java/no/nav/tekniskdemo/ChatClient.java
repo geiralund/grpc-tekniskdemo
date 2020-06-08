@@ -27,7 +27,7 @@ public class ChatClient extends Application {
 
     private ObservableList<String> messages = FXCollections.observableArrayList();
     private ListView<String> messagesView = new ListView<>();
-    private TextField name = new TextField("name");
+    private TextField name = new TextField("Unamed Java");
     private TextField message = new TextField();
     private Button send = new Button();
 
@@ -49,9 +49,7 @@ public class ChatClient extends Application {
         ChatServiceGrpc.ChatServiceStub chatService = ChatServiceGrpc.newStub(channel);
 
         // Open a connection to the server
-        StreamObserver<Chat.ChatMessage> chat = chatService.chat(new StreamObserver<Chat.ChatMessageFromServer>() {
-
-            // Handler for messages from the server
+        StreamObserver<Chat.ChatMessage> chat = chatService.chat(new StreamObserver<>() {
 
             @Override
             public void onNext(Chat.ChatMessageFromServer value) {
@@ -98,6 +96,11 @@ public class ChatClient extends Application {
     private void setupAndShowPrimaryStage(Stage primaryStage) {
         messagesView.setItems(messages);
 
+        name.setStyle("-fx-font: 24 arial;");
+        message.setStyle("-fx-font: 24 arial;");
+        send.setStyle("-fx-font: 24 arial;");
+        messagesView.setStyle("-fx-font: 24 arial;");
+
         send.setText("Send");
 
         BorderPane pane = new BorderPane();
@@ -110,7 +113,7 @@ public class ChatClient extends Application {
         root.setBottom(pane);
 
         primaryStage.setTitle("gRPC Chat");
-        primaryStage.setScene(new Scene(root, 480, 320));
+        primaryStage.setScene(new Scene(root, 700, 520));
 
         primaryStage.show();
     }

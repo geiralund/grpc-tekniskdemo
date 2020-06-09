@@ -21,8 +21,15 @@ application {
 // protobuf-gradle-plugin automatically registers *.proto and the gen output files
 // to IntelliJ as sources.
 // For best results, install the Protobuf and Kotlin plugins for IntelliJ.
-apply(plugin = "com.google.protobuf")
 apply(plugin = "idea")
+apply(plugin = "com.google.protobuf")
+
+// Alternative to recognize generated gRpc and proto generated source code instead of applying plugin = "idea"
+java {
+    val mainJavaSourceSet: SourceDirectorySet = sourceSets.getByName("main").java
+    val protoSrcDir = "$buildDir/generated/source/proto/main"
+    mainJavaSourceSet.srcDirs("$protoSrcDir/java", "$protoSrcDir/grpc", "$protoSrcDir/grpckotlin")
+}
 
 group = "no.nav.tekniskdemo"
 version = "1.0-SNAPSHOT"
@@ -36,8 +43,6 @@ dependencies {
     // kotlin
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
-
-
 
     // Grpc and Protobuf
     protobuf(files("src/proto/"))
@@ -99,11 +104,7 @@ protobuf {
     }
 }
 
-java {
-    val mainJavaSourceSet: SourceDirectorySet = sourceSets.getByName("main").java
-    val protoSrcDir = "$buildDir/generated/source/proto/main"
-    mainJavaSourceSet.srcDirs("$protoSrcDir/java", "$protoSrcDir/grpc", "$protoSrcDir/grpckotlin")
-}
+
 
 
 fun ProtobufConfigurator.generateProtoTasks(action: ProtobufConfigurator.GenerateProtoTaskCollection.() -> Unit) {

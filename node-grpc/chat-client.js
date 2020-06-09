@@ -4,7 +4,8 @@ let grpc = require('grpc');
 let protoLoader = require('@grpc/proto-loader');
 let packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
-    {keepCase: true,
+    {
+        keepCase: true,
         longs: String,
         enums: String,
         defaults: true,
@@ -20,26 +21,36 @@ function main() {
     } else {
         user = 'Unamed Node';
     }
+    console.log(`About to connect to chat with user '${user}'`)
+
     let readline = require('readline');
+
     let rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
         terminal: true
     });
-
     let client = new chat_service.ChatService('localhost:50051',
         grpc.credentials.createInsecure());
     let call = client.chat()
 
-    call.on('data',function(response){
+    call.on('data', function (response) {
         console.log(`Fra: '${response.message.from}' -> ${response.message.message} `)
+    });
+
+    call.on('error', function (err, response) {
+        if (err) {
+            console.error(`Failed to connect to gRPC server`)
+            throw err;
+        }
+
     });
 
     call.on('end', function () {
         console.log('Chat ended');
     });
 
-    rl.on('line', function(line){
+    rl.on('line', function (line) {
         call.write({from: user, message: line})
     })
 

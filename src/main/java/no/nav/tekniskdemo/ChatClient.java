@@ -64,6 +64,10 @@ public class ChatClient extends Application {
             @Override
             public void onError(Throwable t) {
                 t.printStackTrace(System.err);
+                Platform.runLater(() -> {
+                    messages.add("System error: " + t.getMessage());
+                    messagesView.scrollTo(messages.size());
+                });
                 System.out.println("Disconnected");
             }
 
@@ -113,7 +117,7 @@ public class ChatClient extends Application {
         root.setCenter(messagesView);
         root.setBottom(pane);
 
-        primaryStage.setTitle("gRPC Chat");
+        primaryStage.setTitle("gRPC Chat i Arena 🙃");
         primaryStage.setScene(new Scene(root, 700, 520));
 
         primaryStage.show();

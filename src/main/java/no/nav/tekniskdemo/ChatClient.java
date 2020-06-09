@@ -10,10 +10,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import no.nav.tekniskdemo.chat.Chat;
@@ -98,6 +101,15 @@ public class ChatClient extends Application {
         });
     }
 
+    private void setGlobalEventHandler(Node root) {
+        root.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ENTER) {
+                send.fire();
+                ev.consume();
+            }
+        });
+    }
+
     private void setupAndShowPrimaryStage(Stage primaryStage) {
         messagesView.setItems(messages);
 
@@ -116,6 +128,7 @@ public class ChatClient extends Application {
         BorderPane root = new BorderPane();
         root.setCenter(messagesView);
         root.setBottom(pane);
+        setGlobalEventHandler(root);
 
         primaryStage.setTitle("gRPC Chat i Arena 🙃");
         primaryStage.setScene(new Scene(root, 700, 520));

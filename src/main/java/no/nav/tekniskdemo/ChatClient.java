@@ -22,6 +22,11 @@ import javafx.stage.Stage;
 import no.nav.tekniskdemo.chat.Chat;
 import no.nav.tekniskdemo.chat.ChatServiceGrpc;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @SuppressWarnings("restriction")
 public class ChatClient extends Application {
 
@@ -59,7 +64,9 @@ public class ChatClient extends Application {
             public void onNext(Chat.ChatMessageFromServer value) {
                 // Display the message
                 Platform.runLater(() -> {
-                    messages.add(value.getMessage().getFrom() + ": " + value.getMessage().getMessage());
+                    LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochSecond(value.getTimestamp().getSeconds(), value.getTimestamp().getNanos()), ZoneId.systemDefault());
+                    String tt = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+                    messages.add(tt + " " + value.getMessage().getFrom() + ": " + value.getMessage().getMessage());
                     messagesView.scrollTo(messages.size());
                 });
             }

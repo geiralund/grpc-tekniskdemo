@@ -1,5 +1,6 @@
 package no.nav.tekniskdemo
 
+import com.google.protobuf.Timestamp
 import de.huxhorn.sulky.ulid.ULID
 import io.grpc.Server
 import io.grpc.ServerBuilder
@@ -13,6 +14,10 @@ import no.nav.tekniskdemo.person.Person
 import no.nav.tekniskdemo.person.PersonId
 import no.nav.tekniskdemo.person.PersonRequest
 import no.nav.tekniskdemo.person.PersonServiceGrpcKt
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+
 
 internal class GrpcServer(
     port: Int
@@ -73,9 +78,14 @@ internal class GrpcServer(
             return object : StreamObserver<Chat.ChatMessage> {
                 override fun onNext(value: Chat.ChatMessage) {
                     val message = ChatMessageFromServer
-                        .newBuilder()
-                        .setMessage(value)
-                        .build()
+                        .newBuilder().apply {
+                            val time = Instant.now()
+                            timestamp = Timestamp.newBuilder()
+                                .setSeconds(time.epochSecond)
+                                .setNanos(time.nano)
+                                .build()
+                            message = value
+                        }.build()
 
                     for (observer in observers) {
                         observer.onNext(message)

@@ -29,7 +29,7 @@ Kjør serverimplementasjonen fra IDE
 Gå til `node-grpc` mappa 
 `npm install`
 
-Kjør [person-client.js](node-grpc/person-client.js) via `node person-client.js 'navn på person '`
+Kjør [person-client.js](node-grpc/person-client.js) via `node person-client.js 'navn på person '`  
 Kjør [chat-client.js](node-grpc/chat-client.js) via `node chat-client.js 'chat-avatar-navn'`
 
 

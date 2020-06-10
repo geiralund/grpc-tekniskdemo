@@ -21,9 +21,9 @@ Se [ChatClient.java](src/main/java/ChatClient.java) clientimplementasjon av tjen
 ## Howto - BUILD AND RUN  
 
 ### jvm  
-Bygg jvm prosjektene med `./gradlew clean build`
-Kjør [ChatClient.java](src/main/java/ChatClient.java) med `./gradlew run`
-Kjør serverimplementasjonen fra IDE
+Bygg jvm prosjektene med `./gradlew clean build`  
+Kjør [ChatClient.java](src/main/java/ChatClient.java) med `./gradlew run`  
+Kjør serverimplementasjonen fra IDE  
 
 ### node.js
 Gå til `node-grpc` mappa 

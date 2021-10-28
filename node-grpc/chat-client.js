@@ -1,6 +1,6 @@
 let PROTO_PATH = __dirname + '/../src/main/proto/Chat.proto';
 
-let grpc = require('grpc');
+let grpc = require('@grpc/grpc-js');
 let protoLoader = require('@grpc/proto-loader');
 let packageDefinition = protoLoader.loadSync(
     PROTO_PATH,

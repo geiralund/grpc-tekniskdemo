@@ -1,7 +1,7 @@
 import com.google.protobuf.gradle.* // ktlint-disable no-wildcard-imports
 
-val grpcVersion = "1.29.0"
-val grpcKotlinVersion = "0.1.3"
+val grpcVersion = "1.41.0"
+val grpcKotlinVersion = "1.2.0"
 val protbufVersion = "3.11.1"
 val protobufGradleVersion = "0.8.12"
 

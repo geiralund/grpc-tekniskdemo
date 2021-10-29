@@ -3,18 +3,18 @@ import com.google.protobuf.gradle.* // ktlint-disable no-wildcard-imports
 val grpcVersion = "1.41.0"
 val grpcKotlinVersion = "1.2.0"
 val protbufVersion = "3.11.1"
-val protobufGradleVersion = "0.8.12"
+val protobufGradleVersion = "0.8.17"
 
 plugins {
     java
     application
-    kotlin("jvm") version "1.3.72"
-    id("com.google.protobuf") version "0.8.12"
-    id("org.openjfx.javafxplugin") version "0.0.8"
+    kotlin("jvm") version "1.5.31"
+    id("com.google.protobuf") version "0.8.17"
+    id("org.openjfx.javafxplugin") version "0.0.10"
 }
 
 application {
-    mainClassName="no.nav.tekniskdemo.ChatClient"
+    mainClass.set("no.nav.tekniskdemo.ChatClient")
 }
 
 // Generate IntelliJ IDEA's .idea & .iml project files.
@@ -42,16 +42,16 @@ dependencies {
 
     // kotlin
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
 
     // Grpc and Protobuf
     protobuf(files("src/proto/"))
     implementation("com.google.protobuf:protobuf-gradle-plugin:$protobufGradleVersion")
-    api("io.grpc:grpc-api:$grpcVersion")
-    api("io.grpc:grpc-protobuf:$grpcVersion")
-    api("io.grpc:grpc-stub:$grpcVersion")
-    api("io.grpc:grpc-netty-shaded:$grpcVersion")
-    api("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
+    implementation("io.grpc:grpc-api:$grpcVersion")
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("io.grpc:grpc-stub:$grpcVersion")
+    implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
+    implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
 
     implementation("io.grpc:grpc-okhttp:$grpcVersion")
 
@@ -68,15 +68,15 @@ dependencies {
     testImplementation("junit", "junit", "4.12")
 }
 
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_12
+configure<JavaPluginExtension> {
+    sourceCompatibility = JavaVersion.VERSION_16
 }
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "12"
+        kotlinOptions.jvmTarget = "16"
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "12"
+        kotlinOptions.jvmTarget = "16"
     }
 }
 
@@ -90,7 +90,7 @@ protobuf {
             artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
         }
         id("grpckotlin") {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinVersion"
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinVersion:jdk7@jar"
         }
     }
 
@@ -100,6 +100,7 @@ protobuf {
                 id("grpc")
                 id("grpckotlin")
             }
+
         }
     }
 }
@@ -112,6 +113,6 @@ fun ProtobufConfigurator.generateProtoTasks(action: ProtobufConfigurator.Generat
 }
 
 javafx {
-    version = "14"
+    version = "16"
     modules("javafx.base", "javafx.graphics","javafx.controls", "javafx.fxml")
 }
